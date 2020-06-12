@@ -1,0 +1,31 @@
+From 8baa2b68163b6f3dcba1a9b6208dc9e45e5cecb0 Mon Sep 17 00:00:00 2001
+From: Wu Zhangjin <falcon@tinylab.org>
+Date: Sat, 13 Jun 2020 03:07:06 +0800
+Subject: [PATCH] gcc-4.7: fix up as option issue
+
+Signed-off-by: Wu Zhangjin <falcon@tinylab.org>
+---
+ arch/mips/loongson2/Platform | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/arch/mips/loongson2/Platform b/arch/mips/loongson2/Platform
+index a57f30e..15d2e30 100644
+--- a/arch/mips/loongson2/Platform
++++ b/arch/mips/loongson2/Platform
+@@ -1,9 +1,8 @@
+ # Loongson 64 soc
+ 
+ platform-$(CONFIG_MACH_LOONGSON2) += loongson2/
+-ifeq ($(call cc-ifversion, -ge, 0409, y), y)
+-cflags-$(CONFIG_MACH_LOONGSON2) += -I$(srctree)/arch/mips/include/asm/mach-loongson2 -mno-branch-likely -Wa,-mno-fix-loongson3-llsc
+-else
+-cflags-$(CONFIG_MACH_LOONGSON2) += -I$(srctree)/arch/mips/include/asm/mach-loongson2 -mno-branch-likely -Wa,-mnofix-ls3a-llsc
+-endif
++cflags-$(CONFIG_MACH_LOONGSON2) += -I$(srctree)/arch/mips/include/asm/mach-loongson2 -mno-branch-likely
++
++cflags-$(CONFIG_MACH_LOONGSON2) += $(call cc-option,-Wa$(comma)-mnofix-ls3a-llsc) $(call cc-option,-Wa$(comma)-mno-fix-loongson3-llsc)
++
+ load-$(CONFIG_MACH_LOONGSON2) += 0xffffffff80200000
+-- 
+2.7.4
+
